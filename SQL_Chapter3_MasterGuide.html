@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Chapter 3 — Master Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #4f9eff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --code-bg: #0a0c11;
+    --code-border: #2a3045;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --blue: #4f9eff;
+    --purple: #a78bfa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #111827 40%, #1a1035 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; top:-80px; right:-60px;
+    width:400px; height:400px;
+    background: radial-gradient(circle, rgba(79,158,255,.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero::after {
+    content:'';
+    position:absolute; bottom:-100px; left:10%;
+    width:300px; height:300px;
+    background: radial-gradient(circle, rgba(124,58,237,.1) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-tag {
+    display:inline-block;
+    background: rgba(79,158,255,.12);
+    border: 1px solid rgba(79,158,255,.3);
+    color: var(--blue);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:4px 12px;
+    border-radius:4px;
+    margin-bottom:18px;
+  }
+  .hero h1 {
+    font-size: clamp(28px,4vw,48px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--blue); }
+  .hero p {
+    color: var(--text-muted);
+    max-width: 620px;
+    font-size: 15px;
+    font-weight: 300;
+  }
+
+  /* ── NAV ── */
+  .toc {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc::-webkit-scrollbar { display:none; }
+  .toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 18px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  .toc a:hover { color: var(--text); border-color: var(--blue); }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-top: 56px;
+    scroll-margin-top: 70px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+
+  /* ── KEYWORD CARDS ── */
+  .keyword-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .kw-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .kw-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .badge-select { background: rgba(79,158,255,.15); color: #4f9eff; border:1px solid rgba(79,158,255,.3); }
+  .badge-dml    { background: rgba(16,185,129,.12); color: #10b981; border:1px solid rgba(16,185,129,.3); }
+  .badge-ddl    { background: rgba(245,158,11,.12); color: #f59e0b; border:1px solid rgba(245,158,11,.3); }
+  .badge-agg    { background: rgba(167,139,250,.15); color: #a78bfa; border:1px solid rgba(167,139,250,.3); }
+  .badge-set    { background: rgba(239,68,68,.12); color: #ef4444; border:1px solid rgba(239,68,68,.3); }
+  .badge-sub    { background: rgba(20,184,166,.12); color: #2dd4bf; border:1px solid rgba(20,184,166,.3); }
+  .kw-title { font-weight: 700; font-size: 15px; flex:1; }
+  .kw-desc  { color: var(--text-muted); font-size: 13px; }
+
+  .kw-body { padding: 20px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:720px){ .kw-body{ grid-template-columns:1fr; } }
+
+  .kw-meta-box { display:flex; flex-direction:column; gap:12px; }
+  .meta-row { display:flex; flex-direction:column; gap:4px; }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-muted);
+  }
+  .meta-val { font-size: 13.5px; color: var(--text); }
+
+  /* ── CODE ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    white-space: pre;
+    overflow-x: auto;
+    color: #cdd6f4;
+  }
+  .kw-sql { color: #89b4fa; font-weight: 600; }
+  .kw-fn  { color: #cba6f7; font-weight: 600; }
+  .kw-str { color: #a6e3a1; }
+  .kw-num { color: #fab387; }
+  .kw-cmt { color: #6c7086; font-style:italic; }
+  .kw-tbl { color: #89dceb; }
+  .kw-col { color: #f38ba8; }
+
+  .when-box {
+    background: rgba(79,158,255,.06);
+    border-left: 3px solid var(--blue);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13.5px;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .when-box strong { color: var(--blue); }
+
+  /* ── TABLE ── */
+  .db-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--border); margin-bottom:16px; }
+  table { width:100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--surface2); }
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid rgba(37,42,56,.7); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.03); }
+  td { padding: 9px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text); }
+  td.null-cell { color: var(--text-muted); font-style:italic; }
+  td.pk { color: var(--yellow); font-weight:600; }
+  td.fk { color: var(--blue); }
+  td.hi { color: var(--green); font-weight:600; }
+
+  /* ── RESULT TABLES ── */
+  .query-demo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .qd-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .qd-title { font-weight: 700; font-size: 14px; }
+  .qd-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .tag-q  { background: rgba(79,158,255,.15); color: #4f9eff; }
+  .tag-r  { background: rgba(16,185,129,.12); color: #10b981; }
+  .qd-body { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+  @media(max-width:760px){ .qd-body{ grid-template-columns:1fr; } }
+  .qd-left  { padding:14px 18px; border-right:1px solid var(--border); }
+  .qd-right { padding:14px 18px; }
+  .qd-label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+  .qd-body-full { padding:14px 18px; }
+  .rows-badge {
+    display:inline-block;
+    background:rgba(16,185,129,.12);
+    color: var(--green);
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:4px;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+
+  /* ── TWO-COL ── */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:720px){ .two-col{ grid-template-columns:1fr; } }
+
+  /* ── CHEAT SHEET ── */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .cheat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .cheat-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .cheat-item { display:flex; gap:8px; margin-bottom:6px; align-items:flex-start; }
+  .cheat-key {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color: var(--blue);
+    font-weight:600;
+    flex-shrink:0;
+    min-width:90px;
+  }
+  .cheat-val { font-size:12.5px; color:var(--text-muted); }
+
+  /* ── EXERCISE ── */
+  .ex-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .ex-head {
+    padding: 14px 18px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ex-num {
+    background: var(--accent2);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width:26px; height:26px;
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .ex-q { font-weight:600; font-size:14px; }
+  .ex-body { padding:16px 18px; }
+  .ex-hint {
+    font-size:12px; color:var(--text-muted);
+    font-style:italic; margin-top:8px;
+  }
+  .answer-block {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    white-space: pre;
+    overflow-x: auto;
+    color: #cdd6f4;
+    margin-top: 8px;
+    display: none;
+  }
+  .toggle-btn {
+    background: rgba(124,58,237,.15);
+    border: 1px solid rgba(124,58,237,.3);
+    color: #a78bfa;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'Sora', sans-serif;
+    transition: background .15s;
+  }
+  .toggle-btn:hover { background: rgba(124,58,237,.25); }
+
+  /* ── MISC ── */
+  .info-box {
+    background: rgba(79,158,255,.06);
+    border:1px solid rgba(79,158,255,.2);
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:13.5px;
+    margin:12px 0;
+  }
+  .warn-box {
+    background: rgba(245,158,11,.06);
+    border:1px solid rgba(245,158,11,.2);
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:13.5px;
+    margin:12px 0;
+    color:#fbbf24;
+  }
+  .warn-box strong { color:#f59e0b; }
+  .truth-table { font-size:12.5px; }
+  .truth-table td { padding:7px 12px; }
+  .t-true  { color: var(--green); font-weight:600; }
+  .t-false { color: var(--red); font-weight:600; }
+  .t-unk   { color: var(--yellow); font-weight:600; }
+  .divider { border:none; border-top:1px solid var(--border); margin:40px 0; }
+  h3 { font-size:17px; font-weight:700; margin:20px 0 10px; color:var(--text); }
+  p  { font-size:14px; color:var(--text-muted); margin-bottom:10px; }
+  ul { padding-left:20px; color:var(--text-muted); font-size:13.5px; margin-bottom:10px; }
+  li { margin-bottom:4px; }
+  strong { color:var(--text); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Database System Concepts · 7th Edition</div>
+  <h1>Chapter 3: <span>Introduction to SQL</span><br>Master Study Guide</h1>
+  <p>Every keyword, formula, and query — with a unified example database, visualized outputs, a cheat sheet, and a full exercise set.</p>
+</div>
+
+<!-- NAV -->
+<div class="toc">
+  <a href="#sec-db">The Database</a>
+  <a href="#sec-ddl">DDL</a>
+  <a href="#sec-select">SELECT / FROM / WHERE</a>
+  <a href="#sec-additional">Additional Ops</a>
+  <a href="#sec-sets">Set Operations</a>
+  <a href="#sec-null">NULL</a>
+  <a href="#sec-agg">Aggregates</a>
+  <a href="#sec-sub">Subqueries</a>
+  <a href="#sec-modify">Modifications</a>
+  <a href="#sec-cheat">Cheat Sheet</a>
+  <a href="#sec-ex">Exercises</a>
+</div>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 0 — THE EXAMPLE DATABASE -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-db">
+  <div class="section-header">
+    <div class="section-num">★</div>
+    <h2>Our Working Database — Used For Every Example</h2>
+  </div>
+
+  <p>All queries in this guide run on the following five tables. Keep this open as you read — every output table references rows from here.</p>
+
+  <h3>department</h3>
+  <div class="db-wrap"><table>
+    <thead><tr><th>dept_name (PK)</th><th>building</th><th>budget</th></tr></thead>
+    <tbody>
+      <tr><td class="pk">CS</td><td>Watson</td><td class="hi">120000</td></tr>
+      <tr><td class="pk">Biology</td><td>Watson</td><td>90000</td></tr>
+      <tr><td class="pk">Finance</td><td>Painter</td><td>85000</td></tr>
+      <tr><td class="pk">Music</td><td>Packard</td><td>40000</td></tr>
+      <tr><td class="pk">History</td><td>Garfield</td><td>62000</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>instructor</h3>
+  <div class="db-wrap"><table>
+    <thead><tr><th>ID (PK)</th><th>name</th><th>dept_name (FK)</th><th>salary</th></tr></thead>
+    <tbody>
+      <tr><td class="pk">10101</td><td>Srinivasan</td><td class="fk">CS</td><td>65000</td></tr>
+      <tr><td class="pk">12121</td><td>Wu</td><td class="fk">Finance</td><td>90000</td></tr>
+      <tr><td class="pk">15151</td><td>Mozart</td><td class="fk">Music</td><td>40000</td></tr>
+      <tr><td class="pk">22222</td><td>Einstein</td><td class="fk">Physics</td><td class="hi">95000</td></tr>
+      <tr><td class="pk">32343</td><td>El Said</td><td class="fk">History</td><td>60000</td></tr>
+      <tr><td class="pk">33456</td><td>Gold</td><td class="fk">Physics</td><td class="hi">87000</td></tr>
+      <tr><td class="pk">45565</td><td>Katz</td><td class="fk">CS</td><td class="hi">75000</td></tr>
+      <tr><td class="pk">58583</td><td>Califieri</td><td class="fk">History</td><td>62000</td></tr>
+      <tr><td class="pk">76543</td><td>Singh</td><td class="fk">Finance</td><td>80000</td></tr>
+      <tr><td class="pk">76766</td><td>Crick</td><td class="fk">Biology</td><td>72000</td></tr>
+      <tr><td class="pk">83821</td><td>Brandt</td><td class="fk">CS</td><td>92000</td></tr>
+      <tr><td class="pk">98345</td><td>Kim</td><td class="fk">Elec. Eng.</td><td>80000</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>course</h3>
+  <div class="db-wrap"><table>
+    <thead><tr><th>course_id (PK)</th><th>title</th><th>dept_name (FK)</th><th>credits</th></tr></thead>
+    <tbody>
+      <tr><td class="pk">BIO-101</td><td>Intro. to Biology</td><td class="fk">Biology</td><td>4</td></tr>
+      <tr><td class="pk">BIO-301</td><td>Genetics</td><td class="fk">Biology</td><td>4</td></tr>
+      <tr><td class="pk">CS-101</td><td>Intro. to Computer Science</td><td class="fk">CS</td><td>4</td></tr>
+      <tr><td class="pk">CS-315</td><td>Robotics</td><td class="fk">CS</td><td>3</td></tr>
+      <tr><td class="pk">CS-347</td><td>Database Systems</td><td class="fk">CS</td><td>3</td></tr>
+      <tr><td class="pk">FIN-201</td><td>Investment Banking</td><td class="fk">Finance</td><td>3</td></tr>
+      <tr><td class="pk">MU-199</td><td>Music Video Production</td><td class="fk">Music</td><td>3</td></tr>
+      <tr><td class="pk">HIS-351</td><td>World History</td><td class="fk">History</td><td>3</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>section (offerings of a course)</h3>
+  <div class="db-wrap"><table>
+    <thead><tr><th>course_id</th><th>sec_id</th><th>semester</th><th>year</th><th>building</th><th>room</th></tr></thead>
+    <tbody>
+      <tr><td>CS-101</td><td>1</td><td>Fall</td><td>2017</td><td>Packard</td><td>101</td></tr>
+      <tr><td>CS-101</td><td>1</td><td>Spring</td><td>2018</td><td>Packard</td><td>101</td></tr>
+      <tr><td>CS-315</td><td>1</td><td>Spring</td><td>2018</td><td>Watson</td><td>120</td></tr>
+      <tr><td>CS-347</td><td>1</td><td>Fall</td><td>2017</td><td>Taylor</td><td>3128</td></tr>
+      <tr><td>BIO-101</td><td>1</td><td>Summer</td><td>2017</td><td>Painter</td><td>514</td></tr>
+      <tr><td>BIO-301</td><td>1</td><td>Summer</td><td>2018</td><td>Painter</td><td>514</td></tr>
+      <tr><td>FIN-201</td><td>1</td><td>Spring</td><td>2018</td><td>Packard</td><td>101</td></tr>
+      <tr><td>HIS-351</td><td>1</td><td>Spring</td><td>2018</td><td>Garfield</td><td>359</td></tr>
+      <tr><td>MU-199</td><td>1</td><td>Spring</td><td>2018</td><td>Packard</td><td>101</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>takes (student enrollments)</h3>
+  <div class="db-wrap"><table>
+    <thead><tr><th>student_id</th><th>course_id</th><th>sec_id</th><th>semester</th><th>year</th><th>grade</th></tr></thead>
+    <tbody>
+      <tr><td>S001</td><td>CS-101</td><td>1</td><td>Fall</td><td>2017</td><td>A</td></tr>
+      <tr><td>S001</td><td>CS-347</td><td>1</td><td>Fall</td><td>2017</td><td>B+</td></tr>
+      <tr><td>S001</td><td>BIO-101</td><td>1</td><td>Summer</td><td>2017</td><td>A</td></tr>
+      <tr><td>S002</td><td>BIO-101</td><td>1</td><td>Summer</td><td>2017</td><td>B</td></tr>
+      <tr><td>S002</td><td>BIO-301</td><td>1</td><td>Summer</td><td>2018</td><td>A</td></tr>
+      <tr><td>S003</td><td>CS-101</td><td>1</td><td>Spring</td><td>2018</td><td>B</td></tr>
+      <tr><td>S003</td><td>FIN-201</td><td>1</td><td>Spring</td><td>2018</td><td class="null-cell">null</td></tr>
+      <tr><td>S004</td><td>MU-199</td><td>1</td><td>Spring</td><td>2018</td><td>A</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 1 — DDL -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-ddl">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <h2>Data Definition Language (DDL)</h2>
+  </div>
+
+  <!-- CREATE TABLE -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-ddl">DDL</span>
+      <span class="kw-title">CREATE TABLE</span>
+      <span class="kw-desc">Define a new relation and its schema</span>
+    </div>
+    <div class="kw-body">
+      <div class="kw-meta-box">
+        <div class="meta-row"><span class="meta-label">Formula</span>
+          <div class="code-block"><span class="kw-sql">CREATE TABLE</span> table_name (
+  col1  datatype  [constraints],
+  col2  datatype  [constraints],
+  ...
+  <span class="kw-sql">PRIMARY KEY</span> (col1),
+  <span class="kw-sql">FOREIGN KEY</span> (col2) <span class="kw-sql">REFERENCES</span> other_table
+);</div>
+        </div>
+        <div class="meta-row"><span class="meta-label">Input</span><span class="meta-val">Table name, column names + types, optional constraints</span></div>
+        <div class="meta-row"><span class="meta-label">Output</span><span class="meta-val">A new (empty) table added to the database schema</span></div>
+        <div class="meta-row"><span class="meta-label">Key Data Types</span>
+          <ul>
+            <li><code>char(n)</code> — fixed length string</li>
+            <li><code>varchar(n)</code> — variable length string</li>
+            <li><code>int / smallint</code> — integers</li>
+            <li><code>numeric(p,d)</code> — e.g., numeric(8,2) = 123456.78</li>
+            <li><code>float(n) / real / double</code> — floating point</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="meta-row"><span class="meta-label">Simple Example</span>
+          <div class="code-block"><span class="kw-cmt">-- Create the instructor table</span>
+<span class="kw-sql">CREATE TABLE</span> <span class="kw-tbl">instructor</span> (
+  <span class="kw-col">ID</span>        <span class="kw-fn">char</span>(<span class="kw-num">5</span>),
+  <span class="kw-col">name</span>      <span class="kw-fn">varchar</span>(<span class="kw-num">20</span>) <span class="kw-sql">NOT NULL</span>,
+  <span class="kw-col">dept_name</span> <span class="kw-fn">varchar</span>(<span class="kw-num">20</span>),
+  <span class="kw-col">salary</span>    <span class="kw-fn">numeric</span>(<span class="kw-num">8</span>,<span class="kw-num">2</span>),
+  <span class="kw-sql">PRIMARY KEY</span> (<span class="kw-col">ID</span>),
+  <span class="kw-sql">FOREIGN KEY</span> (<span class="kw-col">dept_name</span>)
+    <span class="kw-sql">REFERENCES</span> <span class="kw-tbl">department</span>
+);</div>
+        </div>
+        <div class="when-box"><strong>When to use:</strong> At the start — before inserting any data. You're defining the skeleton of your data model.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALTER / DROP -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-ddl">DDL</span>
+      <span class="kw-title">ALTER TABLE &amp; DROP TABLE</span>
+      <span class="kw-desc">Modify or destroy an existing schema</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="meta-row"><span class="meta-label">Formulas</span>
+          <div class="code-block"><span class="kw-cmt">-- Add a new column (all rows get NULL)</span>
+<span class="kw-sql">ALTER TABLE</span> <span class="kw-tbl">instructor</span> <span class="kw-sql">ADD</span> <span class="kw-col">email</span> <span class="kw-fn">varchar</span>(<span class="kw-num">50</span>);
+
+<span class="kw-cmt">-- Drop a column</span>
+<span class="kw-sql">ALTER TABLE</span> <span class="kw-tbl">instructor</span> <span class="kw-sql">DROP</span> <span class="kw-col">email</span>;
+
+<span class="kw-cmt">-- Delete the entire table (schema + data)</span>
+<span class="kw-sql">DROP TABLE</span> <span class="kw-tbl">instructor</span>;</div>
+        </div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> ALTER when your schema needs to evolve after creation. DROP when you want to remove a table entirely. Note: DROP is irreversible — it removes the table AND all its data.</div>
+        <div class="warn-box"><strong>⚠ Warning:</strong> Dropping attributes is not supported in many databases.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 2 — SELECT / FROM / WHERE -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-select">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <h2>Basic Query Structure: SELECT · FROM · WHERE</h2>
+  </div>
+
+  <p>The three pillars of every SQL query.</p>
+  <div class="code-block" style="margin-bottom:16px"><span class="kw-sql">SELECT</span>  A₁, A₂, ...          <span class="kw-cmt">-- What columns to return (projection)</span>
+<span class="kw-sql">FROM</span>    R₁, R₂, ...          <span class="kw-cmt">-- Which tables (Cartesian product if multiple)</span>
+<span class="kw-sql">WHERE</span>   condition;            <span class="kw-cmt">-- Filter rows (selection predicate)</span></div>
+
+  <!-- SELECT clause -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-select">QUERY</span>
+      <span class="kw-title">SELECT clause — Projection</span>
+      <span class="kw-desc">Picks which columns appear in the result</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="meta-row"><span class="meta-label">Variants &amp; Examples</span>
+          <div class="code-block"><span class="kw-cmt">-- All columns</span>
+<span class="kw-sql">SELECT</span> * <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Specific columns</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span>, <span class="kw-col">salary</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Arithmetic in select</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span>, <span class="kw-col">salary</span>/<span class="kw-num">12</span> <span class="kw-sql">AS</span> monthly_salary
+<span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Remove duplicates with DISTINCT</span>
+<span class="kw-sql">SELECT DISTINCT</span> <span class="kw-col">dept_name</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Literal value (no table needed)</span>
+<span class="kw-sql">SELECT</span> <span class="kw-str">'Hello'</span> <span class="kw-sql">AS</span> greeting;</div>
+        </div>
+      </div>
+      <div>
+        <div class="when-box"><strong>DISTINCT:</strong> SQL by default keeps duplicate rows. Use DISTINCT when you want unique values only — e.g., "what departments exist?" not "how many instructors per dept?"</div>
+        <div class="warn-box"><strong>AS (alias):</strong> Renames a column in the output. Use it to give computed columns a readable name, or to disambiguate columns from two tables.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FROM clause -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-select">QUERY</span>
+      <span class="kw-title">FROM clause — Cartesian Product &amp; Joins</span>
+      <span class="kw-desc">Lists source relations; multiple tables = cross product</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Join instructor + course via matching dept_name</span>
+<span class="kw-sql">SELECT</span> <span class="kw-tbl">instructor</span>.<span class="kw-col">name</span>, <span class="kw-tbl">course</span>.<span class="kw-col">title</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>, <span class="kw-tbl">course</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-tbl">instructor</span>.<span class="kw-col">dept_name</span> = <span class="kw-tbl">course</span>.<span class="kw-col">dept_name</span>;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>Think of it like:</strong> FROM lists ALL the tables you need. Without a WHERE, you get every possible combination (Cartesian product — usually not what you want). Always add a WHERE join condition when using multiple tables.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHERE clause -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-select">QUERY</span>
+      <span class="kw-title">WHERE clause — Filtering Rows</span>
+      <span class="kw-desc">Selection predicate: keeps only rows that satisfy the condition</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Comparison operators: = &lt; &lt;= > >= &lt;></span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span> <span class="kw-sql">AND</span> <span class="kw-col">salary</span> > <span class="kw-num">70000</span>;
+
+<span class="kw-cmt">-- BETWEEN (inclusive both ends)</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> <span class="kw-sql">BETWEEN</span> <span class="kw-num">60000</span> <span class="kw-sql">AND</span> <span class="kw-num">90000</span>;
+
+<span class="kw-cmt">-- Logical: AND, OR, NOT</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span> <span class="kw-sql">OR</span> <span class="kw-col">dept_name</span> = <span class="kw-str">'Biology'</span>;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> Whenever you want a subset of rows. Think of WHERE as the "filter" step — it runs before SELECT chooses columns.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo queries -->
+  <h3>📊 Visualized Query Outputs</h3>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q1 — Names &amp; salaries of CS instructors earning over 70,000</span>
+      <span class="qd-tag tag-q">SELECT + WHERE</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span> <span class="kw-col">name</span>, <span class="kw-col">salary</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span>
+  <span class="kw-sql">AND</span>  <span class="kw-col">salary</span> > <span class="kw-num">70000</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">2 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>name</th><th>salary</th></tr></thead>
+          <tbody>
+            <tr><td>Katz</td><td>75000</td></tr>
+            <tr><td>Brandt</td><td>92000</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q2 — All distinct departments represented in instructor table</span>
+      <span class="qd-tag tag-q">SELECT DISTINCT</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT DISTINCT</span> <span class="kw-col">dept_name</span>
+<span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">6 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>dept_name</th></tr></thead>
+          <tbody>
+            <tr><td>CS</td></tr>
+            <tr><td>Finance</td></tr>
+            <tr><td>Music</td></tr>
+            <tr><td>Physics</td></tr>
+            <tr><td>History</td></tr>
+            <tr><td>Biology</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q3 — Monthly salary of each instructor (arithmetic + AS alias)</span>
+      <span class="qd-tag tag-q">Arithmetic / AS</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span> <span class="kw-col">name</span>,
+       <span class="kw-col">salary</span>/<span class="kw-num">12</span> <span class="kw-sql">AS</span> monthly_salary
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result (CS only, shown)</div>
+        <div class="rows-badge">3 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>name</th><th>monthly_salary</th></tr></thead>
+          <tbody>
+            <tr><td>Srinivasan</td><td>5416.67</td></tr>
+            <tr><td>Katz</td><td>6250.00</td></tr>
+            <tr><td>Brandt</td><td>7666.67</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 3 — ADDITIONAL BASIC OPERATIONS -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-additional">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <h2>Additional Basic Operations</h2>
+  </div>
+
+  <div class="two-col">
+    <!-- LIKE -->
+    <div class="keyword-card">
+      <div class="kw-header">
+        <span class="kw-badge badge-select">QUERY</span>
+        <span class="kw-title">LIKE — Pattern Matching</span>
+      </div>
+      <div class="kw-body" style="grid-template-columns:1fr">
+        <div class="code-block"><span class="kw-cmt">-- % = any substring, _ = single char</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">name</span> <span class="kw-sql">LIKE</span> <span class="kw-str">'%in%'</span>;
+<span class="kw-cmt">-- matches: Srinivasan, Einstein</span>
+
+<span class="kw-cmt">-- Exactly 3 characters</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">name</span> <span class="kw-sql">LIKE</span> <span class="kw-str">'___'</span>;
+<span class="kw-cmt">-- matches: Kim, Wu</span>
+
+<span class="kw-cmt">-- Escape literal %</span>
+<span class="kw-sql">LIKE</span> <span class="kw-str">'100\%'</span> <span class="kw-sql">ESCAPE</span> <span class="kw-str">'\'</span>;</div>
+        <div class="when-box"><strong>Use when:</strong> You don't know the exact value but know part of it. Think "fuzzy search" for strings.</div>
+      </div>
+    </div>
+    <!-- ORDER BY -->
+    <div class="keyword-card">
+      <div class="kw-header">
+        <span class="kw-badge badge-select">QUERY</span>
+        <span class="kw-title">ORDER BY — Sorting Results</span>
+      </div>
+      <div class="kw-body" style="grid-template-columns:1fr">
+        <div class="code-block"><span class="kw-cmt">-- Sort by name A→Z (default ASC)</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span>, <span class="kw-col">salary</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">ORDER BY</span> <span class="kw-col">name</span>;
+
+<span class="kw-cmt">-- Multiple sort keys</span>
+<span class="kw-sql">ORDER BY</span> <span class="kw-col">dept_name</span> <span class="kw-sql">ASC</span>, <span class="kw-col">salary</span> <span class="kw-sql">DESC</span>;</div>
+        <div class="when-box"><strong>Use when:</strong> The output needs a specific order. ORDER BY runs last — after all filtering and projection. ASC = A→Z or low→high (default). DESC = reverse.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rename / AS -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-select">QUERY</span>
+      <span class="kw-title">AS — Rename (Alias) / Self-Join</span>
+      <span class="kw-desc">Rename tables or columns; required when joining a table to itself</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Column alias</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">salary</span>/<span class="kw-num">12</span> <span class="kw-sql">AS</span> monthly_sal
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Table alias (Self-Join)</span>
+<span class="kw-cmt">-- Who earns more than ANY Biology instructor?</span>
+<span class="kw-sql">SELECT DISTINCT</span> T.<span class="kw-col">name</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span> <span class="kw-sql">AS</span> T, <span class="kw-tbl">instructor</span> <span class="kw-sql">AS</span> S
+<span class="kw-sql">WHERE</span>  T.<span class="kw-col">salary</span> > S.<span class="kw-col">salary</span>
+  <span class="kw-sql">AND</span>  S.<span class="kw-col">dept_name</span> = <span class="kw-str">'Biology'</span>;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use AS for self-join:</strong> Whenever you need to compare a table against itself — e.g., "find instructors who earn more than at least one Biology instructor." You must give the table two different aliases (T, S) so SQL can tell them apart.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q4 — Names containing 'in', sorted alphabetically</span>
+      <span class="qd-tag tag-q">LIKE + ORDER BY</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span> <span class="kw-col">name</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">name</span> <span class="kw-sql">LIKE</span> <span class="kw-str">'%in%'</span>
+<span class="kw-sql">ORDER BY</span> <span class="kw-col">name</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">2 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>name</th></tr></thead>
+          <tbody>
+            <tr><td>Einstein</td></tr>
+            <tr><td>Srinivasan</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 4 — SET OPERATIONS -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-sets">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <h2>Set Operations: UNION · INTERSECT · EXCEPT</h2>
+  </div>
+
+  <p>Combine the results of two queries. Both queries must return the same number of columns with compatible types. Duplicates are automatically eliminated (use ALL variant to keep them).</p>
+
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-set">SET</span>
+      <span class="kw-title">UNION / INTERSECT / EXCEPT</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="meta-row"><span class="meta-label">Formulas</span>
+          <div class="code-block"><span class="kw-cmt">-- OR logic: rows in Q1 OR Q2</span>
+(query1) <span class="kw-sql">UNION</span> (query2);
+
+<span class="kw-cmt">-- AND logic: rows in Q1 AND Q2</span>
+(query1) <span class="kw-sql">INTERSECT</span> (query2);
+
+<span class="kw-cmt">-- MINUS: rows in Q1 but NOT Q2</span>
+(query1) <span class="kw-sql">EXCEPT</span> (query2);
+
+<span class="kw-cmt">-- Keep duplicates with ALL</span>
+(query1) <span class="kw-sql">UNION ALL</span> (query2);</div>
+        </div>
+      </div>
+      <div>
+        <div class="when-box"><strong>Mental model:</strong>
+          <br>🔵 UNION = "either or both"
+          <br>🟢 INTERSECT = "both at the same time"
+          <br>🔴 EXCEPT = "first but not second"
+          <br><br><strong>Requirement:</strong> Same number of columns, compatible types in each position.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q5A — Courses offered in Fall 2017 OR Spring 2018 (UNION)</span>
+      <span class="qd-tag tag-q">UNION</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block">(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Fall'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2017</span>)
+<span class="kw-sql">UNION</span>
+(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Spring'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2018</span>);</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result (no duplicates)</div>
+        <div class="rows-badge">7 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>course_id</th></tr></thead>
+          <tbody>
+            <tr><td>CS-101</td></tr>
+            <tr><td>CS-347</td></tr>
+            <tr><td>CS-315</td></tr>
+            <tr><td>FIN-201</td></tr>
+            <tr><td>HIS-351</td></tr>
+            <tr><td>MU-199</td></tr>
+            <tr><td>BIO-101</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q5B — Courses offered in Fall 2017 AND Spring 2018 (INTERSECT)</span>
+      <span class="qd-tag tag-q">INTERSECT</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block">(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Fall'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2017</span>)
+<span class="kw-sql">INTERSECT</span>
+(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Spring'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2018</span>);</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result (offered both semesters)</div>
+        <div class="rows-badge">1 row</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>course_id</th></tr></thead>
+          <tbody>
+            <tr><td class="hi">CS-101</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q5C — Courses in Fall 2017 but NOT Spring 2018 (EXCEPT)</span>
+      <span class="qd-tag tag-q">EXCEPT</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block">(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Fall'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2017</span>)
+<span class="kw-sql">EXCEPT</span>
+(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Spring'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2018</span>);</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result (Fall-only courses)</div>
+        <div class="rows-badge">1 row</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>course_id</th></tr></thead>
+          <tbody>
+            <tr><td>CS-347</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 5 — NULL VALUES -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-null">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <h2>NULL Values — The Three-Valued Logic</h2>
+  </div>
+
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-select">QUERY</span>
+      <span class="kw-title">NULL — Unknown / Missing Value</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Test for NULL — never use = NULL!</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">student_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">takes</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">grade</span> <span class="kw-sql">IS NULL</span>;   <span class="kw-cmt">-- ✓ correct</span>
+<span class="kw-cmt">-- WHERE grade = NULL  ← ✗ WRONG: always unknown</span>
+
+<span class="kw-cmt">-- Arithmetic with NULL = NULL</span>
+<span class="kw-cmt">-- 5 + NULL = NULL</span>
+
+<span class="kw-cmt">-- NOT NULL check</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">grade</span> <span class="kw-sql">IS NOT NULL</span>;</div>
+        <div class="meta-row" style="margin-top:12px"><span class="meta-label">Three-Valued Logic Table</span></div>
+        <div class="db-wrap"><table class="truth-table">
+          <thead><tr><th>A</th><th>B</th><th>A AND B</th><th>A OR B</th></tr></thead>
+          <tbody>
+            <tr><td class="t-true">true</td><td class="t-unk">unknown</td><td class="t-unk">unknown</td><td class="t-true">true</td></tr>
+            <tr><td class="t-false">false</td><td class="t-unk">unknown</td><td class="t-false">false</td><td class="t-unk">unknown</td></tr>
+            <tr><td class="t-unk">unknown</td><td class="t-unk">unknown</td><td class="t-unk">unknown</td><td class="t-unk">unknown</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div>
+        <div class="when-box"><strong>Key rule:</strong> A WHERE condition evaluates to <em>unknown</em> if any comparison involves NULL. Unknown is treated as false — so the row is excluded from the result.
+        <br><br><strong>Example:</strong> grade = 'A' where grade is NULL → unknown → row excluded.
+        <br><br><strong>Only IS NULL / IS NOT NULL</strong> can reliably test for nulls.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q6 — Students with no grade recorded yet (IS NULL)</span>
+      <span class="qd-tag tag-q">IS NULL</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span> <span class="kw-col">student_id</span>, <span class="kw-col">course_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">takes</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">grade</span> <span class="kw-sql">IS NULL</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">1 row</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>student_id</th><th>course_id</th></tr></thead>
+          <tbody>
+            <tr><td>S003</td><td>FIN-201</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 6 — AGGREGATE FUNCTIONS -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-agg">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <h2>Aggregate Functions + GROUP BY + HAVING</h2>
+  </div>
+
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-agg">AGG</span>
+      <span class="kw-title">AVG · MIN · MAX · SUM · COUNT</span>
+      <span class="kw-desc">Collapse multiple rows into a single computed value</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Count all rows</span>
+<span class="kw-sql">SELECT</span> <span class="kw-fn">COUNT</span>(*) <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;
+<span class="kw-cmt">-- → 12</span>
+
+<span class="kw-cmt">-- Average salary (ignores NULLs)</span>
+<span class="kw-sql">SELECT</span> <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span>;
+
+<span class="kw-cmt">-- Max salary</span>
+<span class="kw-sql">SELECT</span> <span class="kw-fn">MAX</span>(<span class="kw-col">salary</span>) <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Count distinct values</span>
+<span class="kw-sql">SELECT</span> <span class="kw-fn">COUNT</span>(<span class="kw-sql">DISTINCT</span> <span class="kw-col">dept_name</span>)
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>;</div>
+      </div>
+      <div>
+        <div class="when-box">
+          <strong>Use when</strong> you need a summary statistic about a group of rows, not individual row values.
+          <br><br>
+          ⚠ <strong>NULL rule:</strong> All aggregate functions ignore NULL values — except COUNT(*) which counts all rows including NULLs.
+          <br><br>
+          📌 <strong>COUNT(*)</strong> = count rows. <strong>COUNT(col)</strong> = count non-null values in col. <strong>COUNT(DISTINCT col)</strong> = unique non-null values.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROUP BY -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-agg">AGG</span>
+      <span class="kw-title">GROUP BY — Aggregate Per Group</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Average salary per department</span>
+<span class="kw-sql">SELECT</span>   <span class="kw-col">dept_name</span>,
+         <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) <span class="kw-sql">AS</span> avg_sal
+<span class="kw-sql">FROM</span>     <span class="kw-tbl">instructor</span>
+<span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>;
+
+<span class="kw-cmt">-- ❌ ILLEGAL — ID not in GROUP BY</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>, <span class="kw-col">ID</span>, <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>)
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>; <span class="kw-cmt">-- ERROR!</span></div>
+      </div>
+      <div>
+        <div class="when-box"><strong>Golden rule:</strong> Every column in SELECT that is NOT inside an aggregate function MUST appear in the GROUP BY clause. Think: "what am I grouping by?" — those are your SELECT columns.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAVING -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-agg">AGG</span>
+      <span class="kw-title">HAVING — Filter on Groups</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Departments with avg salary > 70,000</span>
+<span class="kw-sql">SELECT</span>   <span class="kw-col">dept_name</span>,
+         <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) <span class="kw-sql">AS</span> avg_sal
+<span class="kw-sql">FROM</span>     <span class="kw-tbl">instructor</span>
+<span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>
+<span class="kw-sql">HAVING</span>   <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) > <span class="kw-num">70000</span>;</div>
+      </div>
+      <div>
+        <div class="when-box">
+          <strong>WHERE vs HAVING — the critical distinction:</strong>
+          <br>🔵 <strong>WHERE</strong> filters individual rows <em>before</em> grouping.
+          <br>🟣 <strong>HAVING</strong> filters groups <em>after</em> aggregation.
+          <br><br>Think: "WHERE = row filter. HAVING = group filter."
+          <br>You can't use aggregate functions in WHERE.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q7 — Avg salary per department, only show those above 70,000</span>
+      <span class="qd-tag tag-q">GROUP BY + HAVING</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span>   <span class="kw-col">dept_name</span>,
+         <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) <span class="kw-sql">AS</span> avg_sal
+<span class="kw-sql">FROM</span>     <span class="kw-tbl">instructor</span>
+<span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>
+<span class="kw-sql">HAVING</span>   <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) > <span class="kw-num">70000</span>
+<span class="kw-sql">ORDER BY</span> avg_sal <span class="kw-sql">DESC</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">4 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>dept_name</th><th>avg_sal</th></tr></thead>
+          <tbody>
+            <tr><td>Physics</td><td class="hi">91000</td></tr>
+            <tr><td>Finance</td><td>85000</td></tr>
+            <tr><td>CS</td><td>77333</td></tr>
+            <tr><td>Biology</td><td>72000</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 7 — NESTED SUBQUERIES -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-sub">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <h2>Nested Subqueries</h2>
+  </div>
+
+  <p>A subquery is a SELECT query nested inside another query. It can appear in the WHERE, FROM, or SELECT clause.</p>
+
+  <!-- IN / NOT IN -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">IN / NOT IN — Set Membership Test</span>
+      <span class="kw-desc">Tests whether a value belongs to a set (from a subquery or literal list)</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Courses in Fall 2017 AND Spring 2018</span>
+<span class="kw-sql">SELECT DISTINCT</span> <span class="kw-col">course_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">semester</span>=<span class="kw-str">'Fall'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2017</span>
+  <span class="kw-sql">AND</span>  <span class="kw-col">course_id</span> <span class="kw-sql">IN</span>
+        (<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span>
+         <span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span>
+         <span class="kw-sql">WHERE</span>  <span class="kw-col">semester</span>=<span class="kw-str">'Spring'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2018</span>);
+
+<span class="kw-cmt">-- Literal list: NOT IN</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">name</span> <span class="kw-sql">NOT IN</span> (<span class="kw-str">'Mozart'</span>, <span class="kw-str">'Einstein'</span>);</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> "Is this value in some set?" — great for checking membership in another table's column. 
+        <br><br><strong>IN ≡ = SOME</strong> (mathematically equivalent)
+        <br><strong>NOT IN ≡ ≠ ALL</strong>
+        <br><br>⚠ Careful with NOT IN when the subquery can return NULLs — it will produce unexpected results. Use NOT EXISTS in that case.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOME / ANY -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">SOME (ANY) — At Least One Satisfies</span>
+      <span class="kw-desc">value op SOME(subquery) = true if condition holds for at least one row</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Salary greater than at least one Biology instructor</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> > <span class="kw-sql">SOME</span>
+        (<span class="kw-sql">SELECT</span> <span class="kw-col">salary</span>
+         <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+         <span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span>=<span class="kw-str">'Biology'</span>);</div>
+        <div class="meta-row" style="margin-top:12px"><span class="meta-label">Logic</span>
+          <div class="db-wrap"><table>
+            <thead><tr><th>Expression</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>5 &lt; SOME {0,5,6}</code></td><td class="t-true">true</td></tr>
+              <tr><td><code>5 &lt; SOME {0,5}</code></td><td class="t-false">false</td></tr>
+              <tr><td><code>5 = SOME {0,5}</code></td><td class="t-true">true</td></tr>
+              <tr><td><code>= SOME</code></td><td>same as IN</td></tr>
+              <tr><td><code>≠ SOME</code></td><td>NOT same as NOT IN</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> "My value is [op] at least one value in this set." Useful for relative comparisons — "earn more than the cheapest department member."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">ALL — Every Row Satisfies</span>
+      <span class="kw-desc">value op ALL(subquery) = true if condition holds for every row</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Salary greater than ALL Biology instructors</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">name</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> > <span class="kw-sql">ALL</span>
+        (<span class="kw-sql">SELECT</span> <span class="kw-col">salary</span>
+         <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+         <span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span>=<span class="kw-str">'Biology'</span>);</div>
+        <div class="meta-row" style="margin-top:12px"><span class="meta-label">Logic</span>
+          <div class="db-wrap"><table>
+            <thead><tr><th>Expression</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>5 &lt; ALL {6,10}</code></td><td class="t-true">true</td></tr>
+              <tr><td><code>5 &lt; ALL {4,6}</code></td><td class="t-false">false</td></tr>
+              <tr><td><code>≠ ALL</code></td><td>same as NOT IN</td></tr>
+              <tr><td><code>= ALL</code></td><td>NOT same as IN</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> "My value is [op] every single value in this set." Classic use: "earn more than the highest-paid member of another dept" — stronger than SOME.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXISTS / NOT EXISTS -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">EXISTS / NOT EXISTS — Emptiness Test</span>
+      <span class="kw-desc">Returns true if the subquery result is non-empty (or empty for NOT EXISTS)</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Courses taught in both Fall 2017 AND Spring 2018</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span> <span class="kw-sql">AS</span> S
+<span class="kw-sql">WHERE</span>  <span class="kw-col">semester</span>=<span class="kw-str">'Fall'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2017</span>
+  <span class="kw-sql">AND</span>  <span class="kw-sql">EXISTS</span> (
+         <span class="kw-sql">SELECT</span> *
+         <span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span> <span class="kw-sql">AS</span> T
+         <span class="kw-sql">WHERE</span>  <span class="kw-col">semester</span>=<span class="kw-str">'Spring'</span>
+           <span class="kw-sql">AND</span>  <span class="kw-col">year</span>=<span class="kw-num">2018</span>
+           <span class="kw-sql">AND</span>  S.<span class="kw-col">course_id</span>=T.<span class="kw-col">course_id</span>);</div>
+      </div>
+      <div>
+        <div class="when-box">
+          <strong>EXISTS:</strong> true if inner query returns ≥1 row.
+          <br><strong>NOT EXISTS:</strong> true if inner query returns 0 rows.
+          <br><br>The inner query is a <em>correlated subquery</em> — it references the outer query (S.course_id). This runs for each row of the outer query.
+          <br><br><strong>NOT EXISTS trick:</strong> "Find students who took ALL Biology courses" = NOT EXISTS(Biology courses EXCEPT courses taken by student).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIQUE -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">UNIQUE — No Duplicate Test</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Courses offered at most once in 2017</span>
+<span class="kw-sql">SELECT</span> T.<span class="kw-col">course_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">course</span> <span class="kw-sql">AS</span> T
+<span class="kw-sql">WHERE</span>  <span class="kw-sql">UNIQUE</span> (
+         <span class="kw-sql">SELECT</span> R.<span class="kw-col">course_id</span>
+         <span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span> <span class="kw-sql">AS</span> R
+         <span class="kw-sql">WHERE</span>  T.<span class="kw-col">course_id</span>=R.<span class="kw-col">course_id</span>
+           <span class="kw-sql">AND</span>  R.<span class="kw-col">year</span>=<span class="kw-num">2017</span>);</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> UNIQUE returns true if the subquery has no duplicate rows. Useful for "offered at most once" type questions. Note: not supported in all databases (use COUNT instead as fallback).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subquery in FROM -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">Subquery in FROM — Derived Table</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Use a subquery as if it were a table</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>, avg_sal
+<span class="kw-sql">FROM</span>  (<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>,
+               <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>) <span class="kw-sql">AS</span> avg_sal
+         <span class="kw-sql">FROM</span>  <span class="kw-tbl">instructor</span>
+         <span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>) <span class="kw-sql">AS</span> dept_avg
+<span class="kw-sql">WHERE</span>  avg_sal > <span class="kw-num">70000</span>;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> When you need to filter or join on an aggregated result but can't use HAVING — or when you want to build a "temporary table" inline without the WITH clause. The subquery in FROM must be given an alias.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WITH -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">WITH — Common Table Expression (CTE)</span>
+      <span class="kw-desc">Define a named temporary relation for use in the current query</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Find depts whose total salary > avg dept total salary</span>
+<span class="kw-sql">WITH</span> dept_total (<span class="kw-col">dept_name</span>, total) <span class="kw-sql">AS</span>
+  (<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>, <span class="kw-fn">SUM</span>(<span class="kw-col">salary</span>)
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+   <span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>),
+dept_avg (avg_total) <span class="kw-sql">AS</span>
+  (<span class="kw-sql">SELECT</span> <span class="kw-fn">AVG</span>(total) <span class="kw-sql">FROM</span> dept_total)
+<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>
+<span class="kw-sql">FROM</span>   dept_total, dept_avg
+<span class="kw-sql">WHERE</span>  dept_total.total > dept_avg.avg_total;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> When you need to reference the same subquery multiple times, or when a deeply nested query becomes hard to read. WITH gives each subquery a name and makes the query readable top-to-bottom like building blocks. Multiple CTEs are separated by commas.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scalar Subquery -->
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-sub">SUBQ</span>
+      <span class="kw-title">Scalar Subquery — Single Value Inline</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- For each dept, show count of instructors</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>,
+  (<span class="kw-sql">SELECT</span> <span class="kw-fn">COUNT</span>(*)
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+   <span class="kw-sql">WHERE</span>  <span class="kw-tbl">instructor</span>.<span class="kw-col">dept_name</span>
+          = <span class="kw-tbl">department</span>.<span class="kw-col">dept_name</span>) <span class="kw-sql">AS</span> num_instr
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">department</span>;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>When to use:</strong> In the SELECT clause when you need to add one extra computed column that requires looking up another table — without doing a full JOIN. The subquery MUST return exactly one row and one column. If it returns more → runtime error.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q8 — Instructors earning more than ALL Biology instructors</span>
+      <span class="qd-tag tag-q">ALL subquery</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span> <span class="kw-col">name</span>, <span class="kw-col">salary</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> > <span class="kw-sql">ALL</span>
+  (<span class="kw-sql">SELECT</span> <span class="kw-col">salary</span>
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+   <span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span>=<span class="kw-str">'Biology'</span>);
+<span class="kw-cmt">-- Biology salary = 72000</span>
+<span class="kw-cmt">-- Must earn > 72000</span></div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">5 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>name</th><th>salary</th></tr></thead>
+          <tbody>
+            <tr><td>Wu</td><td>90000</td></tr>
+            <tr><td>Einstein</td><td>95000</td></tr>
+            <tr><td>Gold</td><td>87000</td></tr>
+            <tr><td>Singh</td><td>80000</td></tr>
+            <tr><td>Brandt</td><td>92000</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="query-demo">
+    <div class="qd-header">
+      <span class="qd-title">Q9 — Departments with instructor count (Scalar Subquery)</span>
+      <span class="qd-tag tag-q">Scalar Subquery in SELECT</span>
+    </div>
+    <div class="qd-body">
+      <div class="qd-left">
+        <div class="qd-label">Query</div>
+        <div class="code-block"><span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>,
+  (<span class="kw-sql">SELECT</span> <span class="kw-fn">COUNT</span>(*)
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+   <span class="kw-sql">WHERE</span>  <span class="kw-tbl">instructor</span>.<span class="kw-col">dept_name</span>
+          = <span class="kw-tbl">department</span>.<span class="kw-col">dept_name</span>)
+   <span class="kw-sql">AS</span> num_instructors
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">department</span>;</div>
+      </div>
+      <div class="qd-right">
+        <div class="qd-label">Result</div>
+        <div class="rows-badge">5 rows</div>
+        <div class="db-wrap"><table>
+          <thead><tr><th>dept_name</th><th>num_instructors</th></tr></thead>
+          <tbody>
+            <tr><td>CS</td><td class="hi">3</td></tr>
+            <tr><td>Biology</td><td>1</td></tr>
+            <tr><td>Finance</td><td>2</td></tr>
+            <tr><td>Music</td><td>1</td></tr>
+            <tr><td>History</td><td>2</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 8 — MODIFICATION -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-modify">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <h2>Modification: INSERT · DELETE · UPDATE</h2>
+  </div>
+
+  <div class="two-col">
+    <div class="keyword-card">
+      <div class="kw-header">
+        <span class="kw-badge badge-dml">DML</span>
+        <span class="kw-title">INSERT — Add New Rows</span>
+      </div>
+      <div class="kw-body" style="grid-template-columns:1fr">
+        <div class="code-block"><span class="kw-cmt">-- Insert single row (order matters)</span>
+<span class="kw-sql">INSERT INTO</span> <span class="kw-tbl">course</span>
+<span class="kw-sql">VALUES</span>(<span class="kw-str">'CS-999'</span>,<span class="kw-str">'AI'</span>,<span class="kw-str">'CS'</span>,<span class="kw-num">4</span>);
+
+<span class="kw-cmt">-- Insert with named columns (safer)</span>
+<span class="kw-sql">INSERT INTO</span> <span class="kw-tbl">course</span> (<span class="kw-col">course_id</span>,<span class="kw-col">title</span>,
+                      <span class="kw-col">dept_name</span>,<span class="kw-col">credits</span>)
+<span class="kw-sql">VALUES</span>(<span class="kw-str">'CS-999'</span>,<span class="kw-str">'AI'</span>,<span class="kw-str">'CS'</span>,<span class="kw-num">4</span>);
+
+<span class="kw-cmt">-- Insert from a SELECT query</span>
+<span class="kw-sql">INSERT INTO</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">SELECT</span> <span class="kw-col">ID</span>,<span class="kw-col">name</span>,<span class="kw-col">dept_name</span>,<span class="kw-num">18000</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">student</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span>=<span class="kw-str">'Music'</span>;</div>
+        <div class="when-box"><strong>SELECT is fully evaluated before INSERT</strong> — so INSERT INTO t SELECT * FROM t is safe (no infinite loop).</div>
+      </div>
+    </div>
+
+    <div class="keyword-card">
+      <div class="kw-header">
+        <span class="kw-badge badge-dml">DML</span>
+        <span class="kw-title">DELETE — Remove Rows</span>
+      </div>
+      <div class="kw-body" style="grid-template-columns:1fr">
+        <div class="code-block"><span class="kw-cmt">-- Delete all rows (keep table)</span>
+<span class="kw-sql">DELETE FROM</span> <span class="kw-tbl">instructor</span>;
+
+<span class="kw-cmt">-- Delete with condition</span>
+<span class="kw-sql">DELETE FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span>=<span class="kw-str">'Finance'</span>;
+
+<span class="kw-cmt">-- Delete using subquery</span>
+<span class="kw-sql">DELETE FROM</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> &lt;
+       (<span class="kw-sql">SELECT</span> <span class="kw-fn">AVG</span>(<span class="kw-col">salary</span>)
+        <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>);</div>
+        <div class="when-box"><strong>Key:</strong> SQL first computes the subquery result (e.g., average), then deletes — it does NOT recompute as it deletes. DELETE removes rows; DROP TABLE removes the entire table.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="keyword-card">
+    <div class="kw-header">
+      <span class="kw-badge badge-dml">DML</span>
+      <span class="kw-title">UPDATE + CASE — Modify Values</span>
+    </div>
+    <div class="kw-body">
+      <div>
+        <div class="code-block"><span class="kw-cmt">-- Simple update</span>
+<span class="kw-sql">UPDATE</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">SET</span>    <span class="kw-col">salary</span> = <span class="kw-col">salary</span> * <span class="kw-num">1.05</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> &lt; <span class="kw-num">70000</span>;
+
+<span class="kw-cmt">-- Conditional update with CASE</span>
+<span class="kw-sql">UPDATE</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">SET</span>    <span class="kw-col">salary</span> = <span class="kw-sql">CASE</span>
+  <span class="kw-sql">WHEN</span> <span class="kw-col">salary</span> &lt;= <span class="kw-num">100000</span> <span class="kw-sql">THEN</span> <span class="kw-col">salary</span>*<span class="kw-num">1.05</span>
+  <span class="kw-sql">ELSE</span>                        <span class="kw-col">salary</span>*<span class="kw-num">1.03</span>
+<span class="kw-sql">END</span>;</div>
+      </div>
+      <div>
+        <div class="when-box"><strong>CASE in UPDATE:</strong> Avoids running two separate UPDATE statements where the second might affect rows just updated by the first. CASE handles all conditions in a single pass — much safer for conditional raises.</div>
+        <div class="warn-box"><strong>⚠ Order matters:</strong> Two separate UPDATEs for ≤100K and >100K could give a 100K instructor both raises if not careful. CASE solves this.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- CHEAT SHEET -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-cheat">
+  <div class="section-header">
+    <div class="section-num">★</div>
+    <h2>Key Terms &amp; Cheat Sheet</h2>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>🔵 Query Clauses</h4>
+      <div class="cheat-item"><span class="cheat-key">SELECT</span><span class="cheat-val">Choose output columns (projection)</span></div>
+      <div class="cheat-item"><span class="cheat-key">FROM</span><span class="cheat-val">Source tables (Cartesian product)</span></div>
+      <div class="cheat-item"><span class="cheat-key">WHERE</span><span class="cheat-val">Filter rows before grouping</span></div>
+      <div class="cheat-item"><span class="cheat-key">GROUP BY</span><span class="cheat-val">Collapse rows into groups</span></div>
+      <div class="cheat-item"><span class="cheat-key">HAVING</span><span class="cheat-val">Filter groups after aggregation</span></div>
+      <div class="cheat-item"><span class="cheat-key">ORDER BY</span><span class="cheat-val">Sort output (ASC default)</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>🟣 Aggregate Functions</h4>
+      <div class="cheat-item"><span class="cheat-key">COUNT(*)</span><span class="cheat-val">Count all rows incl. NULLs</span></div>
+      <div class="cheat-item"><span class="cheat-key">COUNT(col)</span><span class="cheat-val">Count non-NULL values</span></div>
+      <div class="cheat-item"><span class="cheat-key">SUM(col)</span><span class="cheat-val">Sum of non-NULL values</span></div>
+      <div class="cheat-item"><span class="cheat-key">AVG(col)</span><span class="cheat-val">Average of non-NULL values</span></div>
+      <div class="cheat-item"><span class="cheat-key">MIN / MAX</span><span class="cheat-val">Minimum / maximum value</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>🔴 Set Operations</h4>
+      <div class="cheat-item"><span class="cheat-key">UNION</span><span class="cheat-val">All rows from both (dedup)</span></div>
+      <div class="cheat-item"><span class="cheat-key">UNION ALL</span><span class="cheat-val">All rows from both (keep dups)</span></div>
+      <div class="cheat-item"><span class="cheat-key">INTERSECT</span><span class="cheat-val">Rows in both results</span></div>
+      <div class="cheat-item"><span class="cheat-key">EXCEPT</span><span class="cheat-val">Rows in first but not second</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>🟢 Subquery Operators</h4>
+      <div class="cheat-item"><span class="cheat-key">IN</span><span class="cheat-val">= any value in set (= SOME)</span></div>
+      <div class="cheat-item"><span class="cheat-key">NOT IN</span><span class="cheat-val">≠ all values in set (= ≠ ALL)</span></div>
+      <div class="cheat-item"><span class="cheat-key">SOME/ANY</span><span class="cheat-val">True for ≥1 row in subquery</span></div>
+      <div class="cheat-item"><span class="cheat-key">ALL</span><span class="cheat-val">True for every row in subquery</span></div>
+      <div class="cheat-item"><span class="cheat-key">EXISTS</span><span class="cheat-val">True if subquery non-empty</span></div>
+      <div class="cheat-item"><span class="cheat-key">NOT EXISTS</span><span class="cheat-val">True if subquery empty</span></div>
+      <div class="cheat-item"><span class="cheat-key">UNIQUE</span><span class="cheat-val">True if no duplicates in subquery</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>🟡 DDL Commands</h4>
+      <div class="cheat-item"><span class="cheat-key">CREATE TABLE</span><span class="cheat-val">Define new relation schema</span></div>
+      <div class="cheat-item"><span class="cheat-key">ALTER TABLE</span><span class="cheat-val">Add/drop columns</span></div>
+      <div class="cheat-item"><span class="cheat-key">DROP TABLE</span><span class="cheat-val">Delete table + all data</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>🟠 DML Commands</h4>
+      <div class="cheat-item"><span class="cheat-key">INSERT INTO</span><span class="cheat-val">Add new rows</span></div>
+      <div class="cheat-item"><span class="cheat-key">DELETE FROM</span><span class="cheat-val">Remove rows matching WHERE</span></div>
+      <div class="cheat-item"><span class="cheat-key">UPDATE...SET</span><span class="cheat-val">Modify column values</span></div>
+      <div class="cheat-item"><span class="cheat-key">CASE WHEN</span><span class="cheat-val">Conditional expression in UPDATE/SELECT</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>📌 NULL Rules</h4>
+      <div class="cheat-item"><span class="cheat-key">IS NULL</span><span class="cheat-val">Test for null (never = NULL)</span></div>
+      <div class="cheat-item"><span class="cheat-key">arithmetic</span><span class="cheat-val">NULL op x = NULL always</span></div>
+      <div class="cheat-item"><span class="cheat-key">WHERE null</span><span class="cheat-val">unknown = treated as false</span></div>
+      <div class="cheat-item"><span class="cheat-key">COUNT(*)</span><span class="cheat-val">Counts NULLs; AVG/SUM ignore</span></div>
+    </div>
+    <div class="cheat-card">
+      <h4>⚙ String &amp; Other</h4>
+      <div class="cheat-item"><span class="cheat-key">LIKE '%x%'</span><span class="cheat-val">% = any substring</span></div>
+      <div class="cheat-item"><span class="cheat-key">LIKE '_x_'</span><span class="cheat-val">_ = exactly one character</span></div>
+      <div class="cheat-item"><span class="cheat-key">BETWEEN a AND b</span><span class="cheat-val">Inclusive range check</span></div>
+      <div class="cheat-item"><span class="cheat-key">AS</span><span class="cheat-val">Rename column or table</span></div>
+      <div class="cheat-item"><span class="cheat-key">DISTINCT</span><span class="cheat-val">Remove duplicate rows</span></div>
+      <div class="cheat-item"><span class="cheat-key">WITH cte AS</span><span class="cheat-val">Named temporary query (CTE)</span></div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:20px">
+    <strong>📋 Query Execution Order (mental model):</strong>
+    FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY
+    <br>This is the logical order SQL evaluates clauses, regardless of how you write them.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- EXERCISES -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-ex">
+  <div class="section-header">
+    <div class="section-num">★</div>
+    <h2>Comprehensive Exercises — All Based on Our Database</h2>
+  </div>
+
+  <p style="margin-bottom:24px">All questions use the five tables defined at the top. Click <strong>"Show Answer"</strong> after attempting each one.</p>
+
+  <!-- Q1 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">1</div>
+      <div class="ex-q">List all instructor names and their department, sorted by department name then by salary descending.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: SELECT + ORDER BY with multiple sort keys</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT</span>   <span class="kw-col">name</span>, <span class="kw-col">dept_name</span>, <span class="kw-col">salary</span>
+<span class="kw-sql">FROM</span>     <span class="kw-tbl">instructor</span>
+<span class="kw-sql">ORDER BY</span> <span class="kw-col">dept_name</span> <span class="kw-sql">ASC</span>, <span class="kw-col">salary</span> <span class="kw-sql">DESC</span>;</div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">2</div>
+      <div class="ex-q">Find all courses from the CS department whose title contains the word "Systems".</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: WHERE + LIKE pattern</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span>, <span class="kw-col">title</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">course</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span>
+  <span class="kw-sql">AND</span>  <span class="kw-col">title</span> <span class="kw-sql">LIKE</span> <span class="kw-str">'%Systems%'</span>;
+<span class="kw-cmt">-- Result: CS-347 | Database Systems</span></div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">3</div>
+      <div class="ex-q">Show each department and the number of instructors it has. Only show departments with more than 1 instructor.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: GROUP BY + HAVING + COUNT</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT</span>   <span class="kw-col">dept_name</span>, <span class="kw-fn">COUNT</span>(*) <span class="kw-sql">AS</span> num_instructors
+<span class="kw-sql">FROM</span>     <span class="kw-tbl">instructor</span>
+<span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>
+<span class="kw-sql">HAVING</span>   <span class="kw-fn">COUNT</span>(*) > <span class="kw-num">1</span>;
+<span class="kw-cmt">-- Result: CS(3), Finance(2), History(2), Physics(2)</span></div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">4</div>
+      <div class="ex-q">Find all course IDs that appeared in the section table in Summer 2017 OR Summer 2018 (no duplicates).</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: UNION (auto-removes duplicates)</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block">(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Summer'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2017</span>)
+<span class="kw-sql">UNION</span>
+(<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span> <span class="kw-sql">FROM</span> <span class="kw-tbl">section</span>
+ <span class="kw-sql">WHERE</span> <span class="kw-col">semester</span>=<span class="kw-str">'Summer'</span> <span class="kw-sql">AND</span> <span class="kw-col">year</span>=<span class="kw-num">2018</span>);
+<span class="kw-cmt">-- Result: BIO-101, BIO-301</span></div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">5</div>
+      <div class="ex-q">Find instructors whose salary is between 60,000 and 80,000. Show name and salary, ordered by salary.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: BETWEEN (inclusive)</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT</span>   <span class="kw-col">name</span>, <span class="kw-col">salary</span>
+<span class="kw-sql">FROM</span>     <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>    <span class="kw-col">salary</span> <span class="kw-sql">BETWEEN</span> <span class="kw-num">60000</span> <span class="kw-sql">AND</span> <span class="kw-num">80000</span>
+<span class="kw-sql">ORDER BY</span> <span class="kw-col">salary</span>;
+<span class="kw-cmt">-- El Said(60k), Srinivasan(65k), Crick(72k),</span>
+<span class="kw-cmt">-- Katz(75k), Singh(80k), Kim(80k)</span></div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">6</div>
+      <div class="ex-q">Find all students who have a NULL grade for any course they took.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: IS NULL in WHERE clause</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT</span> <span class="kw-col">student_id</span>, <span class="kw-col">course_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">takes</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">grade</span> <span class="kw-sql">IS NULL</span>;
+<span class="kw-cmt">-- Result: S003 | FIN-201</span></div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">7</div>
+      <div class="ex-q">Find instructors who earn more than at least one instructor in the Finance department. Use a SOME subquery.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: salary &gt; SOME (SELECT salary FROM ...)</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT DISTINCT</span> <span class="kw-col">name</span>, <span class="kw-col">salary</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+<span class="kw-sql">WHERE</span>  <span class="kw-col">salary</span> > <span class="kw-sql">SOME</span>
+  (<span class="kw-sql">SELECT</span> <span class="kw-col">salary</span>
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+   <span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span>=<span class="kw-str">'Finance'</span>);
+<span class="kw-cmt">-- Finance salaries: 80000, 90000</span>
+<span class="kw-cmt">-- Must earn > 80000 (the lower value)</span></div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">8</div>
+      <div class="ex-q">Use EXISTS to find all courses that were also offered in Summer 2017.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: Outer query scans section; EXISTS checks if matching Summer 2017 row exists</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">SELECT DISTINCT</span> S.<span class="kw-col">course_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span> <span class="kw-sql">AS</span> S
+<span class="kw-sql">WHERE</span>  <span class="kw-sql">EXISTS</span> (
+  <span class="kw-sql">SELECT</span> *
+  <span class="kw-sql">FROM</span>   <span class="kw-tbl">section</span> <span class="kw-sql">AS</span> T
+  <span class="kw-sql">WHERE</span>  T.<span class="kw-col">semester</span>=<span class="kw-str">'Summer'</span>
+    <span class="kw-sql">AND</span>  T.<span class="kw-col">year</span>=<span class="kw-num">2017</span>
+    <span class="kw-sql">AND</span>  T.<span class="kw-col">course_id</span>=S.<span class="kw-col">course_id</span>);
+<span class="kw-cmt">-- Result: BIO-101</span></div>
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">9</div>
+      <div class="ex-q">Using a WITH clause: find all departments whose total salary payroll exceeds the average departmental payroll.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: WITH CTE1 AS (sum per dept), CTE2 AS (avg of CTE1)</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">WITH</span>
+  dept_total(<span class="kw-col">dept_name</span>, total) <span class="kw-sql">AS</span>
+    (<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>, <span class="kw-fn">SUM</span>(<span class="kw-col">salary</span>)
+     <span class="kw-sql">FROM</span>   <span class="kw-tbl">instructor</span>
+     <span class="kw-sql">GROUP BY</span> <span class="kw-col">dept_name</span>),
+  dept_avg(avg_total) <span class="kw-sql">AS</span>
+    (<span class="kw-sql">SELECT</span> <span class="kw-fn">AVG</span>(total) <span class="kw-sql">FROM</span> dept_total)
+<span class="kw-sql">SELECT</span> <span class="kw-col">dept_name</span>
+<span class="kw-sql">FROM</span>   dept_total, dept_avg
+<span class="kw-sql">WHERE</span>  dept_total.total > dept_avg.avg_total;</div>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="ex-card">
+    <div class="ex-head">
+      <div class="ex-num">10</div>
+      <div class="ex-q">Give a 10% raise to all CS instructors, and a 3% raise to all others — in a single UPDATE statement.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: UPDATE with CASE WHEN</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-sql">UPDATE</span> <span class="kw-tbl">instructor</span>
+<span class="kw-sql">SET</span>    <span class="kw-col">salary</span> = <span class="kw-sql">CASE</span>
+  <span class="kw-sql">WHEN</span> <span class="kw-col">dept_name</span> = <span class="kw-str">'CS'</span> <span class="kw-sql">THEN</span> <span class="kw-col">salary</span> * <span class="kw-num">1.10</span>
+  <span class="kw-sql">ELSE</span>                        <span class="kw-col">salary</span> * <span class="kw-num">1.03</span>
+<span class="kw-sql">END</span>;</div>
+    </div>
+  </div>
+
+  <!-- Q11 HARD -->
+  <div class="ex-card">
+    <div class="kw-header" style="background:rgba(124,58,237,.08); border-bottom:1px solid var(--border);">
+      <div class="ex-num" style="background:#dc2626">★</div>
+      <div class="ex-q" style="font-size:14px; font-weight:700;">CHALLENGE — Find students who have taken ALL courses offered by the Biology department.</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-hint">💡 Hint: NOT EXISTS ( Biology courses EXCEPT courses this student took ) — the "divide" pattern</p>
+      <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+      <div class="answer-block"><span class="kw-cmt">-- Logic: a student has taken ALL Biology courses
+-- ⟺  there is NO Biology course they have NOT taken
+-- ⟺  NOT EXISTS (BioCourselist EXCEPT StudentCourseList)</span>
+
+<span class="kw-sql">SELECT DISTINCT</span> S.<span class="kw-col">student_id</span>
+<span class="kw-sql">FROM</span>   <span class="kw-tbl">takes</span> <span class="kw-sql">AS</span> S
+<span class="kw-sql">WHERE</span>  <span class="kw-sql">NOT EXISTS</span> (
+  (<span class="kw-sql">SELECT</span> <span class="kw-col">course_id</span>
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">course</span>
+   <span class="kw-sql">WHERE</span>  <span class="kw-col">dept_name</span> = <span class="kw-str">'Biology'</span>)
+  <span class="kw-sql">EXCEPT</span>
+  (<span class="kw-sql">SELECT</span> T.<span class="kw-col">course_id</span>
+   <span class="kw-sql">FROM</span>   <span class="kw-tbl">takes</span> <span class="kw-sql">AS</span> T
+   <span class="kw-sql">WHERE</span>  T.<span class="kw-col">student_id</span> = S.<span class="kw-col">student_id</span>));
+<span class="kw-cmt">-- Biology courses: BIO-101, BIO-301
+-- S001 took BIO-101 only → excluded
+-- S002 took BIO-101 + BIO-301 → INCLUDED ✓</span></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page -->
+
+<script>
+function toggle(btn) {
+  const block = btn.nextElementSibling;
+  const shown = block.style.display === 'block';
+  block.style.display = shown ? 'none' : 'block';
+  btn.textContent = shown ? 'Show Answer' : 'Hide Answer';
+}
+</script>
+</body>
+</html>
